@@ -1,0 +1,97 @@
+{% load static %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>新闻检索平台</title>
+<link href="{% static 'search/style.css' %}" rel="stylesheet" type="text/css" />
+<script type="text/javascript" >
+
+function key(){
+    //alert("{{ search_text_reg}}")
+    var ym=document.getElementById('templatemo_content').innerHTML;
+    var s = "{{ search_text_reg }}";
+    if (s == "")
+        return;
+    var reg = new RegExp(s, "g");
+    document.getElementById('templatemo_content').innerHTML=ym.replace(reg, '<font color=#00a0ff style = "text-shadow:0px 0px">$1</font>');
+}
+</script>
+</head>
+<body onload="key()">
+
+<div id="templatemo_wrapper">
+
+	<div id="templatemo_header">
+
+    	<div id="site_title">
+            <h1><img src="{% static 'search/images/title.png' %}" alt="logo" /></h1>
+        </div> <!-- end of site_title -->
+
+
+    </div> <!-- end of templatemo_header -->
+
+    <div id="templatemo_menu">
+        <form action = "{% url 'search:search' %}" method="post">
+            {% csrf_token %}
+            <input type="image" src="{% static 'search/images/search.png' %}" onclick = "document.formName.submit()">
+            <input type="text" id="text_edit" name="search" autocomplete="off">
+        </form>
+    </div> <!-- end of templatemo_menu -->
+
+    <div id="templatemo_content_wrapper">
+    	<div id="templatemo_content_top"></div>
+        <div id="templatemo_content">
+            {% if article_list or article_list_end %}
+                {% for x in article_list %}
+                    <div class="news_box">
+                       <a href="{% url 'search:article' x.article_id %}"> <h2 align="justify">  {{ x.title }} </h2> </a>
+                            <div class="news_meta"><div id="pub_time">{{ x.pub_time }}</div></div>
+
+                            <p align="justify">{{ x.abstract }}</p>
+                    </div>
+                {% endfor %}
+                {% for x in article_list_end %}
+                    <div class="news_box news_box_last">
+                        <a href="{% url 'search:article' x.article_id %}"> <h2 align="justify">  {{ x.title }} </h2> </a>
+                        <div class="news_meta"><div id="pub_time">{{ x.pub_time }}</div></div>
+
+                        <p align="justify">{{ x.abstract }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <h2>搜不到o(╥﹏╥)o</h2>
+            {% endif %}
+
+        </div>
+        <div id="templatemo_content_bottom"></div>
+	</div>
+
+
+    <div id="templatemo_footer">
+
+        <div class="digg">
+            {% if last_page %}
+                <a href="{% url 'search:index_number' last_page%}"> < </a>
+            {% endif %}
+            {% for x in page_range %}
+                {% if x == cur_page %}
+                    <span class="current">{{ x }}</span>
+                {% else %}
+                    <a href="{% url 'search:index_number' x%}"> {{ x }} </a>
+                {% endif %}
+            {% endfor %}
+            {% if next_page %}
+                <a href=" {%  url 'search:index_number' next_page %}"> > </a>
+            {% endif %}
+        </div>
+        <br>
+        找到结果{{ search_items }}个
+        用时{{ search_time }}秒
+    </div> <!-- end of templatemo_footer -->
+
+</div> <!-- end of templatemo_wrapper -->
+
+</body>
+</html>

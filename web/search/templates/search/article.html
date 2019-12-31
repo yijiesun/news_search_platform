@@ -1,0 +1,63 @@
+{% load static %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>新闻检索平台</title>
+<link href="{% static 'search/style.css' %}" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+
+<div id="templatemo_wrapper">
+
+	<div id="templatemo_header">
+
+    	<div id="site_title">
+            <h1><img src="{% static 'search/images/title.png' %}" alt="logo" /></h1>
+        </div> <!-- end of site_title -->
+
+
+    </div> <!-- end of templatemo_header -->
+
+     <div id="templatemo_menu">
+        <form action = "{% url 'search:search' %}" method="post">
+            {% csrf_token %}
+            <input type="image" src="{% static 'search/images/search.png' %}" onclick = "document.formName.submit()">
+            <input type="text" id="text_edit" name="search" autocomplete="off">
+        </form>
+    </div> <!-- end of templatemo_menu -->
+
+    <div id="templatemo_content_wrapper">
+    	<div id="templatemo_content_top"></div>
+        <div id="templatemo_content">
+
+            <h2>{{ title }}</h2>
+
+            {% for x in text %}
+                <p>{{ x }}</p>
+            {% endfor %}
+          <div class="cleaner_h20"></div>
+
+            <ul>
+            	{% for x in recommend %}
+                    <li><div id='pub_time'><a href="{% url 'search:article' x.article_id %}">{{ x.title }}</a>&nbsp;&nbsp;{{ x.pub_time }}</div></li>
+                {% endfor %}
+            </ul>
+        	<div class="cleaner"></div>
+
+        </div>
+        <div id="templatemo_content_bottom"></div>
+	</div>
+
+
+    <div id="templatemo_footer">
+
+
+    </div> <!-- end of templatemo_footer -->
+
+</div> <!-- end of templatemo_wrapper -->
+
+</body>
+</html>
